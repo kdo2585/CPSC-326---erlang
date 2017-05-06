@@ -33,6 +33,19 @@
 			false->comment_relevance(lists:nthtail(1,List),Map)
 			end.
 		
+		% >parse:readlines(test).
+		readlines(Filename)->
+			{ok,Device} = file:open(FileName,[read]),
+			try get_all_lines(Device)
+				after file:close(Device)
+			end.
+			
+		get_all_lines(Device)->
+			case io:get_line(Device,"") of
+				eof->[];
+				Line->Line++get_all_lines(Device)
+			end.
+			
 		start()->
 			S="oranges apples sock tickle the flying oranges",
 			U=string:tokens(string:to_lower(S)," "),
