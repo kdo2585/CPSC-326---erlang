@@ -1,6 +1,6 @@
 -module(searchengine).
 	-export([tokenize/1]).
-        -export([inputKV/0]).
+    -export([inputKV/0]).
 	-export([createKV/2]).
 	-export([createmap/0]).
 	-export([comment_relevance/2]).
@@ -9,7 +9,17 @@
 	-export([get_all_lines/1]).
 	-export([readlines/1]).
 	-export([start/0]).
+	-export([sort/3]).
 
+		% sort example:
+		% val -> score = 1, comments = 2, user_rate = 3
+		% (val, [{upvotes/score,  comment,  user rate}])
+		% lists:keysort(3,[{1500,what,5},{1000,climate,2},{2000,gas,3},{100,trump,1}]).
+		A = {1500,what,5}, B = {1000,climate,2}, C ={2000,gas,3}, D = {100,trump,1}.
+		
+		sort({Upvotes, Comments, Rank})-> 
+			lists:keysort(3,[A,B,C,D]).
+			
 		tokenize(String) ->
 			string:tokens(String, " ").
 	
@@ -26,22 +36,21 @@
 
 		createmap()->
 			createKV(inputKV(),	#{}).
-		
-		
-		
+
 		comment_relevance([],Map)-> 0;
 		
 		comment_relevance(String,Map)-> 
-								List=tokenize(String),
-								case maps:is_key(lists:nth(1,List),Map) of 
-									true -> element(2,maps:find(lists:nth(1,List),Map)) + comment_relevance(lists:nthtail(1,List),Map); 
-									false->comment_relevance(lists:nthtail(1,List),Map)
-								end.
+			List=tokenize(String),
+			case maps:is_key(lists:nth(1,List),Map) of 
+				true -> element(2,maps:find(lists:nth(1,List),Map)) + comment_relevance(lists:nthtail(1,List),Map); 
+				false->comment_relevance(lists:nthtail(1,List),Map)
+			end.
 		
 		comment_length(String)-> length(tokenize(String)).
 		
 		add_comment_data(Id,R,L,S)-> {Id,R,L,S}.
 
+		%readlines(test).
 		readlines(parse_test_file.txt)->
 				{ok,Device} = file:open(parse_test_file.txt,[read]),
 				try get_all_lines(Device)
@@ -63,9 +72,4 @@
 			%spawn(parse, comment_relevance, [U,M]),
 			%spawn(parse, comment_relevance,[T,M]),
 			comment_relevance(Q,M).
-		
-		
-
-		
-		
 		
