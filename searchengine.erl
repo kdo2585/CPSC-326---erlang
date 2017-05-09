@@ -59,18 +59,35 @@
 		
 		store_comments(ComLists, Map)->
 			Id = lists:nth(1,ComLists), 
-			R=comment_relevance(Id, Map), 
+			R=comment_relevance(Id, Map), io:fwrite("~p~n",[R]),
 			L=comment_length(Id),
 			lists:append(add_comment_data(Id,R,L), store_comments(lists:nthtail(1,ComLists),Map)).
 
 		start()->
-			R = read(test),
+			R= read(test),
 			M=createmap(),
 			S = store_comments(R, M),
 			G = io:get_line("How do you want to sort? (L = length, R= relevant)"),
 			if
 				G == "L\n" ->
-					X = 2;
-				true ->
-					X = 3
-			end.
+					X = 3;
+				G == "R\n" ->
+					X = 2
+			end,
+
+			B = lists:keysort(X,S),
+			
+			N = io:get_line("Do you want to sort in reverse? (y,n)"),			
+			if
+				N == "y\n" ->
+					 lists:reverse(B);
+				N== "n\n" ->
+					ok
+			end.		
+
+
+
+
+
+
+
