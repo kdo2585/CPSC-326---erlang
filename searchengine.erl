@@ -39,13 +39,14 @@
 
 		comment_relevance([],Map)-> 0;
 		
-		comment_relevance(String,Map)-> 
-			List=tokenize(String),
+		comment_relevance(List,Map)-> 
+			io:fwrite("~p~n",[List]),
 			case maps:is_key(lists:nth(1,List),Map) of 
 				true -> element(2,maps:find(lists:nth(1,List),Map)) + comment_relevance(lists:nthtail(1,List),Map); 
 				false->comment_relevance(lists:nthtail(1,List),Map)
 			end.
 		
+
 		comment_length(String)-> length(tokenize(String)).
 		
 		add_comment_data(Id,R,L)-> [{Id,R,L}].
@@ -59,12 +60,13 @@
 		
 		store_comments(ComLists, Map)->
 			Id = lists:nth(1,ComLists), 
-			R=comment_relevance(Id, Map), io:fwrite("~p~n",[R]),
-			L=comment_length(Id),
+			List=tokenize(Id),
+			R=comment_relevance(List, Map), io:fwrite("~p~n",[R]),
+			L=comment_length(List),
 			lists:append(add_comment_data(Id,R,L), store_comments(lists:nthtail(1,ComLists),Map)).
 
 		start()->
-			R= read(test),
+			R= ["he did nothing", "wrong he"],
 			M=createmap(),
 			S = store_comments(R, M),
 			G = io:get_line("How do you want to sort? (L = length, R= relevant)"),
@@ -82,12 +84,7 @@
 				N == "y\n" ->
 					 lists:reverse(B);
 				N== "n\n" ->
-					ok
+					B
 			end.		
 
-
-
-
-
-
-
+		
