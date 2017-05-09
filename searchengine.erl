@@ -73,15 +73,4 @@
 					X = 2;
 				true ->
 					X = 3
-			end,
-
-			lists:keysort(X,S),
-
-			%S="oranges apples sock tickle the flying oranges",
-			%Q=string:tokens(string:to_lower(S)," "),
-
-			
-			%spawn(parse, comment_relevance, [U,M]),
-			%spawn(parse, comment_relevance,[T,M]),
-			%comment_relevance(Q,M).
-		
+			end.
